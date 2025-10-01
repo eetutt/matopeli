@@ -46,6 +46,8 @@ class SnakeGame(QGraphicsView):
         super().resizeEvent(event)
         if not self.game_started:
             self.init_screen()
+        elif self.game_started and not self.timer.isActive():
+            self.show_game_over()
 
     def spawn_food(self):
         while True:
@@ -87,6 +89,7 @@ class SnakeGame(QGraphicsView):
         if new_head in self.snake or not (0 <= new_head[0] < GRID_WIDTH) or not (0 <= new_head[1] < GRID_HEIGHT):
             self.timer.stop()
             self.crash_sound.play()
+            self.show_game_over()
             return
 
         self.snake.insert(0, new_head)
@@ -114,6 +117,17 @@ class SnakeGame(QGraphicsView):
         self.snake = [(5, 5), (5, 6), (5, 7)]
         self.timer.start(300)
         self.food = self.spawn_food()
+        
+    def show_game_over(self):
+        self.scene().clear()
+        font = QFont("Arial", 18)
+        over_text = self.scene().addText("Game Over", font)
+        text_rect = over_text.boundingRect()
+        view_width = self.viewport().width()
+        view_height = self.viewport().height()
+        text_x = (view_width - text_rect.width()) / 2
+        text_y = (view_height - text_rect.height()) / 2
+        over_text.setPos(text_x, text_y)
 
 def main():
     app = QApplication(sys.argv)
