@@ -18,7 +18,6 @@ class SnakeGame(QGraphicsView):
         super().__init__()
 
         self.setScene(QGraphicsScene(self))
-        self.scene().setBackgroundBrush(QColor(200,200,200))
         self.setRenderHint(QPainter.Antialiasing)
         self.setSceneRect(0, 0, CELL_SIZE * GRID_WIDTH, CELL_SIZE * GRID_HEIGHT)
 
@@ -118,8 +117,13 @@ class SnakeGame(QGraphicsView):
 
     def print_game(self):
         self.scene().clear()
+        view_width = self.viewport().width()
+        view_height = self.viewport().height()
+        for i in range(int(view_width/CELL_SIZE)):
+            for j in range(int(view_height/CELL_SIZE)):
+                self.scene().addRect(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE, CELL_SIZE, QPen(QColor(220,220,220))), QBrush(QColor(200, 200, 200))
 
-
+        #self.setSceneRect(0, 0, CELL_SIZE * GRID_WIDTH, CELL_SIZE * GRID_HEIGHT)
         for segment in self.snake:
             x, y = segment
             self.scene().addRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE, QPen(QColor(0,80,0)), QBrush(QColor(40, 160, 0)))
