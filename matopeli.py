@@ -1,9 +1,12 @@
 # 'pip install PySide6' tarvitaan 
 import sys
 import random
+
 from PySide6.QtWidgets import QApplication, QGraphicsView, QGraphicsScene, QMenu
 from PySide6.QtGui import QPainter, QPen, QBrush, QFont
 from PySide6.QtCore import Qt, QTimer
+from PySide6.QtMultimedia import QSoundEffect
+from PySide6.QtCore import QUrl
 
 # vakiot
 CELL_SIZE = 20
@@ -20,7 +23,12 @@ class SnakeGame(QGraphicsView):
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_game)
-        
+
+        self.crash_sound = QSoundEffect()
+        self.crash_sound.setSource(QUrl.fromLocalFile("crash.wav"))
+        self.food_sound = QSoundEffect()
+        self.food_sound.setSource(QUrl.fromLocalFile("apple_crunch.wav"))
+
         self.start_game()
 
     def spawn_food(self):
@@ -58,11 +66,13 @@ class SnakeGame(QGraphicsView):
         # board limits
         if new_head in self.snake or not (0 <= new_head[0] < GRID_WIDTH) or not (0 <= new_head[1] < GRID_HEIGHT):
             self.timer.stop()
+            self.crash_sound.play()
             return
 
         self.snake.insert(0, new_head)
         
         if new_head == self.food:
+            self.food_sound.play()
             self.food = self.spawn_food()
 
         self.snake.pop()
