@@ -32,10 +32,20 @@ class SnakeGame(QGraphicsView):
         self.game_started = False
         self.init_screen()
     def init_screen(self):
-        start_text = self.scene().addText("Press any key to start", QFont("Arial", 18))
-        text_width = start_text.boundingRect().width()
-        text_x = (self.width() - text_width) / 2
-        start_text.setPos(text_x, GRID_HEIGHT * CELL_SIZE / 2)
+        self.scene().clear()
+        font = QFont("Arial", 18)
+        start_text = self.scene().addText("Press any key to start", font)
+        text_rect = start_text.boundingRect()
+        view_width = self.viewport().width()
+        view_height = self.viewport().height()
+        text_x = (view_width - text_rect.width()) / 2
+        text_y = (view_height - text_rect.height()) / 2
+        start_text.setPos(text_x, text_y)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        if not self.game_started:
+            self.init_screen()
 
     def spawn_food(self):
         while True:
