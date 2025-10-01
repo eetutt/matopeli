@@ -63,6 +63,12 @@ class SnakeGame(QGraphicsView):
             self.scene().clear()
             self.start_game()
             return
+        if hasattr(self, 'waiting_new_game') and self.waiting_new_game:
+            self.waiting_new_game = False
+            self.game_started = True
+            self.scene().clear()
+            self.start_game()
+            return
         if key in (Qt.Key_Left, Qt.Key_Right, Qt.Key_Up, Qt.Key_Down):
             if key == Qt.Key_Left and self.direction != Qt.Key_Right:
                 self.direction = key
@@ -90,6 +96,7 @@ class SnakeGame(QGraphicsView):
             self.timer.stop()
             self.crash_sound.play()
             self.show_game_over()
+            self.game_started = False
             return
 
         self.snake.insert(0, new_head)
@@ -117,17 +124,21 @@ class SnakeGame(QGraphicsView):
         self.snake = [(5, 5), (5, 6), (5, 7)]
         self.timer.start(300)
         self.food = self.spawn_food()
-        
+        self.game_started = True
+        if hasattr(self, 'waiting_new_game'):
+            self.waiting_new_game = False
+
     def show_game_over(self):
         self.scene().clear()
         font = QFont("Arial", 18)
-        over_text = self.scene().addText("Game Over", font)
+        over_text = self.scene().addText("Game Over, start new game?", font)
         text_rect = over_text.boundingRect()
         view_width = self.viewport().width()
         view_height = self.viewport().height()
         text_x = (view_width - text_rect.width()) / 2
         text_y = (view_height - text_rect.height()) / 2
         over_text.setPos(text_x, text_y)
+        self.waiting_new_game = True
 
 def main():
     app = QApplication(sys.argv)
