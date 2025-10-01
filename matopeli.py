@@ -3,7 +3,7 @@ import sys
 import random
 
 from PySide6.QtWidgets import QApplication, QGraphicsView, QGraphicsScene, QMenu
-from PySide6.QtGui import QPainter, QPen, QBrush, QFont
+from PySide6.QtGui import QPainter, QPen, QBrush, QFont, QColor
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtMultimedia import QSoundEffect
 from PySide6.QtCore import QUrl
@@ -108,9 +108,9 @@ class SnakeGame(QGraphicsView):
 
         for segment in self.snake:
             x, y = segment
-            self.scene().addRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE, QPen(Qt.black), QBrush(Qt.black))
+            self.scene().addRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE, QPen(QColor(40, 160, 0)), QBrush(QColor(40, 160, 0)))
             fx, fy = self.food
-            self.scene().addRect(fx * CELL_SIZE, fy * CELL_SIZE, CELL_SIZE, CELL_SIZE, QPen(Qt.black), QBrush(Qt.black))
+            self.scene().addRect(fx * CELL_SIZE, fy * CELL_SIZE, CELL_SIZE, CELL_SIZE, QPen(Qt.red), QBrush(Qt.red))
         
     def start_game(self):
         self.direction = Qt.Key_Right
