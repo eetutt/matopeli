@@ -18,6 +18,7 @@ class SnakeGame(QGraphicsView):
         super().__init__()
 
         self.setScene(QGraphicsScene(self))
+        self.scene().setBackgroundBrush(QColor(200,200,200))
         self.setRenderHint(QPainter.Antialiasing)
         self.setSceneRect(0, 0, CELL_SIZE * GRID_WIDTH, CELL_SIZE * GRID_HEIGHT)
 
@@ -105,6 +106,10 @@ class SnakeGame(QGraphicsView):
             self.score += 1
             self.food_sound.play()
             self.food = self.spawn_food()
+            if self.score == self.level_limit:
+                self.level_limit += 5
+                self.timer_delay *= 0.9
+                self.timer.setInterval(self.timer_delay)
 
         else:
             self.snake.pop()
@@ -117,9 +122,9 @@ class SnakeGame(QGraphicsView):
 
         for segment in self.snake:
             x, y = segment
-            self.scene().addRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE, QPen(QColor(40, 160, 0)), QBrush(QColor(40, 160, 0)))
+            self.scene().addRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE, QPen(QColor(0,80,0)), QBrush(QColor(40, 160, 0)))
             fx, fy = self.food
-            self.scene().addRect(fx * CELL_SIZE, fy * CELL_SIZE, CELL_SIZE, CELL_SIZE, QPen(Qt.red), QBrush(Qt.red))
+            self.scene().addRect(fx * CELL_SIZE, fy * CELL_SIZE, CELL_SIZE, CELL_SIZE, QPen(QColor(80,0,0)), QBrush(Qt.red))
             self.scene().addText(f"Score: {self.score}", QFont("Arial", 12)) 
         
     def start_game(self):
@@ -132,6 +137,11 @@ class SnakeGame(QGraphicsView):
         self.game_started = True
         if hasattr(self, 'waiting_new_game'):
             self.waiting_new_game = False
+            # for levels
+        self.level_limit = 5
+        self.timer_delay = 300
+
+        self.timer.start(self.timer_delay)
 
     def show_game_over(self):
         self.scene().clear()
