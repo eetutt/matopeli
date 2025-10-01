@@ -29,9 +29,13 @@ class SnakeGame(QGraphicsView):
         self.food_sound = QSoundEffect()
         self.food_sound.setSource(QUrl.fromLocalFile("apple_crunch.wav"))
 
-        self.game_started = True
-
-        self.start_game()
+        self.game_started = False
+        self.init_screen()
+    def init_screen(self):
+        start_text = self.scene().addText("Press any key to start", QFont("Arial", 18))
+        text_width = start_text.boundingRect().width()
+        text_x = (self.width() - text_width) / 2
+        start_text.setPos(text_x, GRID_HEIGHT * CELL_SIZE / 2)
 
     def spawn_food(self):
         while True:
@@ -43,12 +47,11 @@ class SnakeGame(QGraphicsView):
     def keyPressEvent(self, event):
         key = event.key()
         if not self.game_started:
-            if key == event.key():
-                self.game_started = True
-                self.scene().clear()
-                self.start_game()
+            self.game_started = True
+            self.scene().clear()
+            self.start_game()
+            return
         if key in (Qt.Key_Left, Qt.Key_Right, Qt.Key_Up, Qt.Key_Down):
-            # päivitetään suunta vain jos se ei ole vastakkainen valitulle suunnalle
             if key == Qt.Key_Left and self.direction != Qt.Key_Right:
                 self.direction = key
             elif key == Qt.Key_Right and self.direction != Qt.Key_Left:
@@ -56,7 +59,7 @@ class SnakeGame(QGraphicsView):
             elif key == Qt.Key_Up and self.direction != Qt.Key_Down:
                 self.direction = key
             elif key == Qt.Key_Down and self.direction != Qt.Key_Up:
-                self.direction = key    
+                self.direction = key
 
     def update_game(self):
         head_x, head_y = self.snake[0]
